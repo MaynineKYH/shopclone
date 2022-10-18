@@ -116,7 +116,7 @@ const Home = ({navigation}) => {
           </View>
         ) : null}
         <Text>
-          &#8377; {data.productPrice}
+          $ {data.productPrice} 
         </Text>
       </TouchableOpacity>
     )
@@ -146,7 +146,7 @@ const Home = ({navigation}) => {
               backgroundColor:COLOURS.backgroundLight
             }}/>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={()=> navigation.navigate('MyCart')}>
             <MaterialCommunityIcons name='cart' style={{
               fontSize:18,
               color:COLOURS.backgroundMedium,

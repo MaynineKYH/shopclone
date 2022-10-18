@@ -1,8 +1,9 @@
-import { View, Text, StatusBar,Image,Animated,Dimensions ,ScrollView,FlatList, TouchableOpacity } from 'react-native'
+import { View, Text, StatusBar,Image,Animated,Dimensions ,ScrollView,FlatList, TouchableOpacity, ToastAndroid } from 'react-native'
 import React, {useEffect, useState} from 'react'
 import { COLOURS, Items } from '../database/Database';
 import Entypo from 'react-native-vector-icons/Entypo'
 import Ionic from 'react-native-vector-icons/Ionicons'
+import AsynceStorage from '@react-native-async-storage/async-storage'
 
 const ProductInfo = ({route}) => {
   const {productID} = route.params;
@@ -25,8 +26,44 @@ const ProductInfo = ({route}) => {
       if(Items[index].id == productID){
         await setProduct(Items[index])
         return;
-1      }
+      }
     }
+  }
+
+  //add to cart
+  const addToCart = async id =>{
+    let itemArray = await AsynceStorage.getItem('cartItems');
+    itemArray = JSON.parse(itemArray)
+    if(itemArray){
+      let array = itemArray
+      array.push(id);
+    
+      try{
+        await AsynceStorage.setItem('cartItems',JSON.stringify(array));
+        ToastAndroid.show(
+          'Item Added Successfully to cart',
+          ToastAndroid.SHORT
+          );
+          navigation.navigate('Home');
+        }catch(error){
+          return error
+        }
+      }else{
+
+        let array = [];
+        array.push(id);
+        try{
+        await AsynceStorage.setItem('cartItems', JSON.stringify(array))
+        ToastAndroid.show(
+          'Item Added Successfully to cart',
+          ToastAndroid.SHORT
+          );
+          navigation.navigate('Home')
+        }catch(error){
+          return error;
+      }
+    }
+
   }
   
   //product horizontal scroll product card
@@ -187,8 +224,19 @@ const ProductInfo = ({route}) => {
             }}>
               {product.description}
             </Text>
-            <View>
-              <View>
+            <View style={{
+              flexDirection:'row',
+              alignItems:'center',
+              justifyContent:'space-between',
+              marginVertical:14,
+              borderBottomColor:COLOURS.backgroundLight,
+              paddingBottom:20
+            }}>
+              <View style={{
+              flexDirection:'row',
+              width:'80%',
+              alignItems:'center'
+              }}>
                 <View style={{
                   color:COLOURS.blue,
                   backgroundColor:COLOURS.backgroundLight,
@@ -204,9 +252,59 @@ const ProductInfo = ({route}) => {
                 </View>
                 <Text>Seoul gangnam 12,{'\n'} 12:00 ~ 18:30</Text>
               </View>
+              <Entypo name='chevron-right' style={{
+                fontSize:22,
+                color:COLOURS.backgroundDark
+              }}/>
+            </View>
+            <View style={{
+              paddingHorizontal:16
+            }}>
+              <Text style={{
+                fontSize:18,
+                fontWeight:'500',
+                maxWidth:'85%',
+                color:COLOURS.black,
+                marginBottom:4
+              }}>
+                $ {product.productPrice}.00
+              </Text>
+              <Text>
+                Tax Rate 2% ~ ${product.productPrice/20} (${product.productPrice + product.productPrice/20})
+              </Text>
             </View>
           </View>
         </ScrollView>
+
+        <View style={{
+          position:'absolute',
+          bottom:10,
+          height:'8%',
+          width:'100%',
+          justifyContent:'center',
+          alignItems:'center'
+        }}>
+          <TouchableOpacity onPress={()=>{
+            product.isAvailable ? addToCart(product.id) :null
+          }} style={{
+            width:'86%',
+            height:'90%',
+            backgroundColor:COLOURS.blue,
+            borderRadius:20,
+            justifyContent:'center',
+            alignItems:'center'
+          }}>
+            <Text style={{
+              fontSize:12,
+              fontWeight:'500',
+              letterSpacing:1,
+              color:COLOURS.white,
+              textTransform:'uppercase'
+            }}>
+              {product.isAvailable ? "Add to cart" : "Not Available"}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </Text>
     </View>
   )

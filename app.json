@@ -5,7 +5,12 @@
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "518145b5-f6a7-4cff-b022-f04f490bd274"
+      }
+    }
   },
   "name": "shoppingApp"
 }
