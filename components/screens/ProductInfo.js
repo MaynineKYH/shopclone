@@ -87,13 +87,11 @@ const ProductInfo = ({route}) => {
 
 
   return (
-    <View>
-      <Text style={{
+    <View style={{
         width:'100%',
         height:'100%',
         backgroundColor:COLOURS.white,
-        position:'relative'
-      }}>
+        position:'relative'}}>
         <StatusBar backgroundColor={COLOURS.backgroundLight} barStyle={'dark-content'}/>
         <ScrollView style={{
           width:'100%',
@@ -305,7 +303,6 @@ const ProductInfo = ({route}) => {
             </Text>
           </TouchableOpacity>
         </View>
-      </Text>
     </View>
   )
 }

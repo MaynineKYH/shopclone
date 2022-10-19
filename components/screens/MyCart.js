@@ -1,4 +1,4 @@
-import { View, Text, ScrollVIew,Image ,TouchableOpacity } from 'react-native'
+import { View, Text, ScrollVIew,Image ,TouchableOpacity, ToastAndroid } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { COLOURS, Items } from '../database/Database'
@@ -48,9 +48,37 @@ const MyCart = ({navigation}) => {
     setTotal(total);
   }
 
+  //remove data from Cart
+  const removeItemFromCart = async id =>{
+    let itemArray = await AsyncStorage.getItem('cartItems');
+    itemArray = JSON.parse(itemArray)
+    if(itemArray){
+      let array = itemArray;
+      for(let index =0; index < array.length; index++){
+        if(array[index] == id ){
+          array.splice(index, 1);
+        }
+        await AsyncStorag.setItem('cartItems', JSON.stringify(array));
+        getDataFromDB();
+      }
+    }
+  }
+
+  //checkout
+  const checkOut = async()=>{
+    try{
+      await AsyncStorage.removeItem('cartItems')
+    }catch(error){
+      return error
+    }
+
+    ToastAndroid.show('Item will be Deliverd SOON !', ToastAndroid.SHORT)
+
+    navigation.navigate('Home')
+  }
   const renderProduct = (data, index)=>{
     return(
-      <TouchableOpacity style={{
+      <TouchableOpacity onPress={()=> navigation.navigate('ProductInfo', {productID: data.id})} style={{
         width:'100%',
         height:100,
         marginVertical:6,
@@ -74,6 +102,90 @@ const MyCart = ({navigation}) => {
             resizeMode:'contain'
           }}/>
         </View>
+        <View style={{
+          flex:1,
+          height:'100%',
+          justifyContent:'space-around'
+        }}>
+          <View>
+            <Text style={{
+              fontSize:14,
+              maxWidth:'100%',
+              color:COLOURS.black,
+              fontWeight:'600',
+              letterSpacing:1
+            }}>
+              {data.productName}
+            </Text>
+            <View style={{
+              marginTop:4,
+              flexDirection:'row',
+              alignItems:'center',
+              opacity:0.6
+            }}>
+              <Text style={{
+                fontSize:14,
+                fontWeight:'400',
+                maxWidth:'85%',
+                marginRight:4
+              }}>
+                ${data.productPrice}.00
+              </Text>
+              <Text>
+                (${
+                  data.productPrice + data.productPrice/20
+                })
+              </Text>
+            </View>
+          </View>
+          <View style={{
+              flexDirection:'row',
+              justifyContent:'space-between',
+              alignItems:'center'
+            }}>
+            <View style={{
+              flexDirection:'row',
+              alignItems:'center'
+            }}>
+              <View style={{
+                borderRadius:100,
+                marginRight:20,
+                padding:4,
+                borderWidth:1,
+                borderColor:COLOURS.backgroundMedium,
+                opacity:0.5
+              }}>
+                <Material name='minus' style={{
+                  fontSize:16,
+                  color:COLOURS.backgroundDark
+                }}/>
+              </View>
+              <Text>1</Text>
+              <View style={{
+                borderRadius:100,
+                marginRight:20,
+                padding:4,
+                borderWidth:1,
+                borderColor:COLOURS.backgroundMedium,
+                opacity:0.5
+              }}>
+                <Material name='plus' style={{
+                  fontSize:16,
+                  color:COLOURS.backgroundDark
+                }}/>
+              </View>
+            </View>
+            <TouchableOpacity onPress={()=>removeItemFromCart(data.id)}>
+              <Material name='delete-outline' style={{
+                fontSize:16,
+                color:COLOURS.backgroundDark,
+                backgroundColor:COLOURS.backgroundLight,
+                padding:8,
+                borderRadius:100
+              }}/>
+            </TouchableOpacity>
+          </View>
+        </View>
       </TouchableOpacity>
     )
   }
@@ -82,7 +194,8 @@ const MyCart = ({navigation}) => {
     <View style={{
       width:'100%',
       height:'100%',
-      backgroundColor:COLOURS.white
+      backgroundColor:COLOURS.white,
+      position:'relative'
     }}>
       <ScrollVIew>
         <View style={{
@@ -93,7 +206,7 @@ const MyCart = ({navigation}) => {
           justifyContent:'space-between',
           alignItems:'center'
         }}>
-          <TouchableOpacity onPress={()=>navigation.goBack()}>
+          <TouchableOpacity onPress={()=>navigation.goBack('Home')}>
             <Material name='chevron-left' style={{
               fontSize:18,
               color:COLOURS.backgroundDark,
@@ -122,10 +235,251 @@ const MyCart = ({navigation}) => {
         }}>
           My Cart
         </Text>
-        <View>
+        <View style={{
+          paddingHorizontal:16
+        }}>
           {product ? product.map(renderProduct) : null}
         </View>
+        <View>
+          <View style={{
+            paddingHorizontal:16,
+            marginVertical:10
+          }}>
+            <Text style={{
+              fontSize:16,
+              color:COLOURS.black,
+              fontWeight:'500',
+              letterSpacing:1,
+              marginBottom:20
+            }}>
+              Payment Method
+            </Text>
+            <View style={{
+              flexDirection:'row',
+              alignItems:'center',
+              justifyContent:'space-between'
+            }}>
+              <View style={{
+                flexDirection:'row',
+                width:'80%',
+                alignItems:'center'
+
+              }}>
+                <View style={{
+                  color:COLOURS.blue,
+                  backgroundColor:COLOURS.backgroundLight,
+                  alignItems:'center',
+                  justifyContent:'center',
+                  padding:12,
+                  borderRadius:100,
+                  marginRight:18
+                }}>
+                  <Text style={{
+                    fontSize:10,
+                    fontWeight:'900',
+                    color:COLOURS.blue,
+                    letterSpacing:1
+                  }}>VISA</Text>
+                </View>
+                <View>
+                  <Text style={{
+                    fontSize:14,
+                    color:COLOURS.black,
+                    fontWeight:'500'
+                  }}>
+                    Visa Classic
+                  </Text>
+                  <Text style={{
+                    fontSize:12,
+                    color:COLOURS.black,
+                    fontWeight:'400',
+                    lineHeight:20,
+                    opacity:0.5
+                  }}>
+                     ****-1008
+                  </Text>
+                </View>
+              </View>
+              <Material name='chervon-right' style={{
+                fontSize:22,
+                color:COLOURS.black
+              }}/>
+            </View>
+          </View>
+          <View style={{
+            paddingHorizontal:16,
+            marginVertical:10
+          }}>
+            <Text style={{
+              fontSize:16,
+              color:COLOURS.black,
+              fontWeight:'500',
+              letterSpacing:1,
+              marginBottom:20
+            }}>
+              Delivery Location
+            </Text>
+            <View style={{
+              flexDirection:'row',
+              alignItems:'center',
+              justifyContent:'space-between'
+            }}>
+              <View style={{
+                flexDirection:'row',
+                width:'80%',
+                alignItems:'center'
+
+              }}>
+                <View style={{
+                  color:COLOURS.blue,
+                  backgroundColor:COLOURS.backgroundLight,
+                  alignItems:'center',
+                  justifyContent:'center',
+                  padding:12,
+                  borderRadius:100,
+                  marginRight:18
+                }}>
+                  <Material name='truck-delivery-outline' style={{
+                    fontSize:18,
+                    color:COLOURS.blue
+                  }} />
+                </View>
+                <View>
+                  <Text style={{
+                    fontSize:14,
+                    color:COLOURS.black,
+                    fontWeight:'500'
+                  }}>
+                    cheonan-si
+                  </Text>
+                  <Text style={{
+                    fontSize:12,
+                    color:COLOURS.black,
+                    fontWeight:'400',
+                    lineHeight:20,
+                    opacity:0.5
+                  }}>
+                     12-3 St
+                  </Text>
+                </View>
+              </View>
+              <Material name='chervon-right' style={{
+                fontSize:22,
+                color:COLOURS.black
+              }}/>
+            </View>
+          </View>
+          <View style={{
+            paddingHorizontal:16,
+            marginTop:40,
+            marginBottom:80
+          }}>
+            <Text style={{
+              fontSize:16,
+              color:COLOURS.black,
+              fontWeight:'500',
+              letterSpacing:1,
+              marginBottom:20
+            }}>
+              Order Info
+            </Text>
+            <View style={{
+              flexDirection:'row',
+              alignItems:'center',
+              justifyContent:'space-between',
+              marginBottom:8
+            }}>
+              <Text style={{
+                fontSize:12,
+                fontWeight:'400',
+                maxWidth:'80%',
+                color:COLOURS.black,
+                opacity:0.5
+              }}>Subtotal</Text>
+              <Text style={{
+                fontSize:12,
+                fontWeight:'400',
+                color:COLOURS.black,
+                opacity:0.8
+              }}>${total}.00
+              </Text>
+            </View>
+            <View style={{
+              flexDirection:'row',
+              alignItems:'center',
+              justifyContent:'space-between',
+              marginBottom:22
+            }}>
+              <Text style={{
+                fontSize:12,
+                fontWeight:'400',
+                maxWidth:'80%',
+                color:COLOURS.black,
+                opacity:0.5
+              }}>Shipping Tax</Text>
+              <Text style={{
+                fontSize:12,
+                fontWeight:'400',
+                maxWidth:'80%',
+                color:COLOURS.black,
+                opacity:0.8
+              }}>${total / 20}
+              </Text>
+            </View>
+            <View style={{
+              flexDirection:'row',
+              alignItems:'center',
+              justifyContent:'space-between',
+            }}>
+              <Text style={{
+                fontSize:12,
+                fontWeight:'400',
+                maxWidth:'80%',
+                color:COLOURS.black,
+                opacity:0.5
+              }}>Total</Text>
+              <Text style={{
+                fontSize:18,
+                fontWeight:'500',
+                color:COLOURS.black,
+              }}>${total +  total / 20}
+              </Text>
+            </View>
+          </View>
+        </View>
       </ScrollVIew>
+      
+      <View>
+        <View style={{
+          position:'absolute',
+          bottom:10,
+          height:'8%',
+          width:'100%',
+          justifyContent:'center',
+          alignItems:'center'
+        }}>
+          <TouchableOpacity onPress={()=>{
+            {total !=0 ? checkOut() : null}
+          }} style={{
+            width:'86%',
+            height:'90%',
+            backgroundColor:COLOURS.blue,
+            borderRadius:20,
+            justifyContent:'center',
+            alignItems:'center'
+          }}>
+            <Text style={{
+              fontSize:12,
+              fontWeight:'500',
+              letterSpacing:1,
+              color:COLOURS.white,
+              textTransform:'uppercase'
+            }}>
+              CHECKOUT ${total + total/20}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   )
 }
