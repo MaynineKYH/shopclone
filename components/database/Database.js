@@ -67,11 +67,11 @@ export const Items = [
     description:'Up to 20 hours battery life | Super powerful Bass | 40mm dynamic driver | Pressure less ear muffs | Bluetooth 5.0 | Voice control',
     isOff:false,
     isAvailable:false,
-    productImage:require('../database/images/products/boatairpods1.png'),
+    productImage:require('../database/images/accessories/boatairpods1.png'),
     productImageList:[
-      require('../database/images/products/boatairpods1.png'),
-      require('../database/images/products/boatairpods2.png'),
-      require('../database/images/products/boatairpods3.png'),
+      require('../database/images/accessories/boatairpods1.png'),
+      require('../database/images/accessories/boatairpods2.png'),
+      require('../database/images/accessories/boatairpods3.png'),
     ]
   },
   {
@@ -82,11 +82,11 @@ export const Items = [
     description:'Up to 20 hours battery life | Super powerful Bass | 40mm dynamic driver | Pressure less ear muffs | Bluetooth 5.0 | Voice control',
     isOff:false,
     isAvailable:true,
-    productImage:require('../database/images/products/boatbassheads1.png'),
+    productImage:require('../database/images/accessories/boatbassheads1.png'),
     productImageList:[
-      require('../database/images/products/boatbassheads1.png'),
-      require('../database/images/products/boatbassheads2.png'),
-      require('../database/images/products/boatbassheads3.png'),
+      require('../database/images/accessories/boatbassheads1.png'),
+      require('../database/images/accessories/boatbassheads2.png'),
+      require('../database/images/accessories/boatbassheads3.png'),
     ]
   },
   {
@@ -97,11 +97,11 @@ export const Items = [
     description:'Up to 20 hours battery life | Super powerful Bass | 40mm dynamic driver | Pressure less ear muffs | Bluetooth 5.0 | Voice control',
     isOff:false,
     isAvailable:false,
-    productImage:require('../database/images/products/boatrockerz1.png'),
+    productImage:require('../database/images/accessories/boatrockerz1.png'),
     productImageList:[
-      require('../database/images/products/boatrockerz1.png'),
-      require('../database/images/products/boatrockerz2.png'),
-      require('../database/images/products/boatrockerz3.png'),
+      require('../database/images/accessories/boatrockerz1.png'),
+      require('../database/images/accessories/boatrockerz2.png'),
+      require('../database/images/accessories/boatrockerz3.png'),
     ]
   },
   {
@@ -112,11 +112,11 @@ export const Items = [
     description:'Up to 20 hours battery life | Super powerful Bass | 40mm dynamic driver | Pressure less ear muffs | Bluetooth 5.0 | Voice control',
     isOff:false,
     isAvailable:true,
-    productImage:require('../database/images/products/boultairbass1.png'),
+    productImage:require('../database/images/accessories/boultairbass1.png'),
     productImageList:[
-      require('../database/images/products/boultairbass1.png'),
-      require('../database/images/products/boultairbass2.png'),
-      require('../database/images/products/boultairbass3.png'),
+      require('../database/images/accessories/boultairbass1.png'),
+      require('../database/images/accessories/boultairbass2.png'),
+      require('../database/images/accessories/boultairbass3.png'),
     ]
   }
 ]

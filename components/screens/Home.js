@@ -14,7 +14,9 @@ const Home = ({navigation}) => {
     const unsubscribe = navigation.addListener('focus',()=>{
       getDataFromDB()
     })
-  },[navigation])
+
+    return unsubscribe;
+  },[navigation]);
 
   //get data from DB
   const getDataFromDB = ()=>{
@@ -152,7 +154,6 @@ const Home = ({navigation}) => {
               color:COLOURS.backgroundMedium,
               padding:12,
               borderRadius:10,
-              borderWidth:1,
               backgroundColor:COLOURS.backgroundLight
             }}/>
           </TouchableOpacity>
@@ -207,7 +208,7 @@ const Home = ({navigation}) => {
               <Text style={{
                 fontSize:14,
                 color:COLOURS.blue,
-                fontWeight:400
+                fontWeight:'400'
               }}>
                 SeeAll
               </Text>
@@ -276,7 +277,7 @@ const Home = ({navigation}) => {
               <Text style={{
                 fontSize:14,
                 color:COLOURS.blue,
-                fontWeight:400
+                fontWeight:'400'
               }}>
                 SeeAll
               </Text>

@@ -3,12 +3,12 @@ import React, { useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { COLOURS, Items } from '../database/Database'
 import Material from 'react-native-vector-icons/MaterialIcons'
-import { Colors } from 'react-native/Libraries/NewAppScreen'
+
 
 const MyCart = ({navigation}) => {
   
-  const [product, setProduct] = useState()
-  const [total, setTotal] = useState(null)
+  const [product, setProduct] = useState();
+  const [total, setTotal] = useState(null);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus',()=>{
@@ -35,11 +35,11 @@ const MyCart = ({navigation}) => {
       getTotal(productData)
     }else{
       setProduct(false)
-      getTotal(false)
+      getTotal(true)
     }
   }
 
-  const getTotal = (productData)=>{
+  const getTotal = productData=>{
     let total = 0;
     for (let index = 0; index < productData.length; index++) {
       let productPrice = productData[index].productPrice;
@@ -58,7 +58,7 @@ const MyCart = ({navigation}) => {
         if(array[index] == id ){
           array.splice(index, 1);
         }
-        await AsyncStorag.setItem('cartItems', JSON.stringify(array));
+        await AsyncStorage.setItem('cartItems', JSON.stringify(array));
         getDataFromDB();
       }
     }
@@ -78,7 +78,9 @@ const MyCart = ({navigation}) => {
   }
   const renderProduct = (data, index)=>{
     return(
-      <TouchableOpacity onPress={()=> navigation.navigate('ProductInfo', {productID: data.id})} style={{
+      <TouchableOpacity 
+        key={data.key}
+        onPress={()=> navigation.navigate('ProductInfo', {productID: data.id})} style={{
         width:'100%',
         height:100,
         marginVertical:6,
@@ -133,7 +135,7 @@ const MyCart = ({navigation}) => {
               </Text>
               <Text>
                 (${
-                  data.productPrice + data.productPrice/20
+                  data.productPrice + data.productPrice / 20
                 })
               </Text>
             </View>
