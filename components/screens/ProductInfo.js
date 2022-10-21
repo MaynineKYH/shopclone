@@ -3,25 +3,28 @@ import React, {useEffect, useState} from 'react'
 import { COLOURS, Items } from '../database/Database';
 import Entypo from 'react-native-vector-icons/Entypo'
 import Ionic from 'react-native-vector-icons/Ionicons'
-import AsynceStorage from '@react-native-async-storage/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
-const ProductInfo = ({route}) => {
+const ProductInfo = ({route, navigation}) => {
   const {productID} = route.params;
+
   const [product, setProduct] = useState({});
+
   const width = Dimensions.get('window').width;
+
   const scrollX = new Animated.Value(0);
   
   let position = Animated.divide(scrollX,width);
 
   useEffect(()=>{
     const unsubscribe = navigation.addListener('focus',()=>{
-      getDataFromDB()
+      getDataFromDB();
     });
     return unsubscribe;
   },[navigation]);
 
   //get product data by productID
-  const getDataFromDB = async()=>{
+  const getDataFromDB = async () => {
     for(let index=0; index < Items.length; index++){
       if(Items[index].id == productID){
         await setProduct(Items[index])
@@ -32,14 +35,14 @@ const ProductInfo = ({route}) => {
 
   //add to cart
   const addToCart = async id =>{
-    let itemArray = await AsynceStorage.getItem('cartItems');
+    let itemArray = await AsyncStorage.getItem('cartItems');
     itemArray = JSON.parse(itemArray)
     if(itemArray){
       let array = itemArray
       array.push(id);
     
       try{
-        await AsynceStorage.setItem('cartItems',JSON.stringify(array));
+        await AsyncStorage.setItem('cartItems',JSON.stringify(array));
         ToastAndroid.show(
           'Item Added Successfully to cart',
           ToastAndroid.SHORT
@@ -53,7 +56,7 @@ const ProductInfo = ({route}) => {
         let array = [];
         array.push(id);
         try{
-        await AsynceStorage.setItem('cartItems', JSON.stringify(array))
+        await AsyncStorage.setItem('cartItems', JSON.stringify(array))
         ToastAndroid.show(
           'Item Added Successfully to cart',
           ToastAndroid.SHORT
@@ -92,27 +95,30 @@ const ProductInfo = ({route}) => {
         height:'100%',
         backgroundColor:COLOURS.white,
         position:'relative'}}>
-        <StatusBar backgroundColor={COLOURS.backgroundLight} barStyle={'dark-content'}/>
-        <ScrollView style={{
-          width:'100%',
-          backgroundColor:COLOURS.backgroundLight,
-          borderBottomRightRadius:20,
-          borderBottomLeftRadius:20,
-          position:'relative',
-          justifyContent:'center',
-          alignItems:'center',
-          marginBottom:4
-        }}>
-          <View style={{
+        <StatusBar 
+        backgroundColor={COLOURS.backgroundLight} 
+        barStyle={'dark-content'}/>
+        <ScrollView> 
+          <View 
+            style={{
             width:'100%',
-            flexDirection:'row',
-            justifyContent:'space-between',
-            paddingTop:16,
-            paddingLeft:16
-          }}>
-            <View>
+            backgroundColor:COLOURS.backgroundLight,
+            borderBottomRightRadius:20,
+            borderBottomLeftRadius:20,
+            position:'relative',
+            justifyContent:'center',
+            alignItems:'center',
+            marginBottom:4
+            }}>
+            <View style={{
+              width:'100%',
+              flexDirection:'row',
+              justifyContent:'space-between',
+              paddingTop:16,
+              paddingLeft:16
+            }}>
               <TouchableOpacity>
-                <Entypo name='chevron-left' style={{
+                <Entypo name='chevron-left' onPress={()=> navigation.goBack('Home')} style={{
                   fontSize:18,
                   color:COLOURS.backgroundDark,
                   padding:12,
@@ -122,14 +128,17 @@ const ProductInfo = ({route}) => {
               </TouchableOpacity>
             </View>
             <FlatList
+            showsHorizontalScrollIndicator={false}
             data={product.productImageList ? product.productImageList : null}
             horizontal
+            renderItem={renderProduct}
+            snapToInterval={width}
             bounces={false}
+            decelerationRate={0.8}
             onScroll={Animated.event(
               [{nativeEvent: {contentOffset:{x:scrollX}}}],
-              {useNativeDriver:false}
-            )}
-            renderItem={renderProduct} snapToInterval={width} decelerationRate={0.8} showsHorizontalScrollIndicator={false}/>
+              {useNativeDriver:false},
+            )}/>
             <View style={{
               width:'100%',
               flexDirection:'row',
@@ -158,8 +167,7 @@ const ProductInfo = ({route}) => {
                     }}>
                     </Animated.View>
                   )
-                }) : null
-              }
+                }) : null}
             </View>
           </View>
           <View style={{
@@ -227,6 +235,7 @@ const ProductInfo = ({route}) => {
               alignItems:'center',
               justifyContent:'space-between',
               marginVertical:14,
+              borderBottomWidth:1,
               borderBottomColor:COLOURS.backgroundLight,
               paddingBottom:20
             }}>
@@ -282,9 +291,9 @@ const ProductInfo = ({route}) => {
           justifyContent:'center',
           alignItems:'center'
         }}>
-          <TouchableOpacity onPress={()=>{
+          <TouchableOpacity onPress={()=>(
             product.isAvailable ? addToCart(product.id) :null
-          }} style={{
+            )} style={{
             width:'86%',
             height:'90%',
             backgroundColor:COLOURS.blue,
